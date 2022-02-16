@@ -29,8 +29,10 @@ GROUP BY o.`id`;
 
 SELECT o.`id`, o.`fk_cust_id`, c.`first_name`, c.`surname`, c.`address`, c.`postcode`, c.`email`
 FROM `orders` o 
-JOIN `customers` c ON c.`id` = o.`fk_cust_id`;
+JOIN `customers` c ON c.`id` = o.`fk_cust_id`
+ORDER BY o.id DESC;
 
 SELECT oc.fk_order_id, oc.fk_item_id, i.name, i.price
 FROM order_contents oc
-JOIN items i ON i.id = oc.fk_item_id; 
+JOIN items i ON i.id = oc.fk_item_id
+ORDER BY oc.fk_order_id ASC; 

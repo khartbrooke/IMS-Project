@@ -102,7 +102,7 @@ public class ItemDAO implements Dao<Item>{
 	 * Updates an item in the database
 	 * 
 	 * @param item - takes in an item object, the id field will be used to
-	 *                 update that customer in the database
+	 *                 update that item in the database
 	 * @return
 	 */
 	@Override

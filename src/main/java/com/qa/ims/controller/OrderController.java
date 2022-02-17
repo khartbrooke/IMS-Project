@@ -14,7 +14,7 @@ import com.qa.ims.persistence.domain.Item;
 import com.qa.ims.persistence.domain.Order;
 import com.qa.ims.utils.Utils;
 
-public class OrderController implements CrudController<Order>{
+public class OrderController implements CostController {
 	
 	public static final Logger LOGGER = LogManager.getLogger();
 	
@@ -78,15 +78,50 @@ public class OrderController implements CrudController<Order>{
 	 */
 	@Override
 	public Order update() {
-		/*LOGGER.info("Please enter the id of the item you would like to update");
+		LOGGER.info("Please enter the id of the order you would like to update");
 		Long id = utils.getLong();
-		LOGGER.info("Please enter a name");
-		String name = utils.getString();
-		LOGGER.info("Please enter a price");
-		Double price = utils.getDouble();
-		Item item = itemDAO.update(new Item(id, name, price));
-		LOGGER.info("Item Updated");*/
-		return null;
+		LOGGER.info("Here is the order:");
+		Order order = orderDAO.read(id);
+		Order orderSave = order;
+		LOGGER.info(order.toString());
+		LOGGER.info("Would you like to ADD or REMOVE an item from this order? If you don't want to make any changes type CANCEL");
+		String response = utils.getString().toUpperCase();
+		List<Item> items = order.getItems();
+		Item item;
+		Long itemId;
+		while (!response.equalsIgnoreCase("CANCEL") || !response.equalsIgnoreCase("NO")) {
+			if (response.equals("ADD")) {
+				LOGGER.info("Please enter the id of the item you would like to add");
+				itemId = utils.getLong();
+				item = itemDAO.read(itemId);
+				items.add(item);
+				order.setItems(items);
+			} else if (response.equalsIgnoreCase("REMOVE")) {
+				LOGGER.info("Please enter the id of the item you would like to remove");
+				itemId = utils.getLong();
+				item = itemDAO.read(itemId);
+				items.remove(item);
+				order.setItems(items);
+			} else if (response.equalsIgnoreCase("CANCEL")) {
+				LOGGER.info("Cancelled all changes");
+				return orderSave;
+			}
+			else {
+				LOGGER.info("Response not recognised");
+			}
+			LOGGER.info(order.toString());
+			LOGGER.info("Would you like to ADD or REMOVE an item from this order? If you don't want to make any further changes, type NO. "
+					+ "If you want to cancel all changes, type CANCEL");			
+			response = utils.getString();		
+			if (response.equalsIgnoreCase("NO")) {
+				order = orderDAO.update(order);
+				LOGGER.info("Order Updated");
+				return order;
+			}
+		}
+		order = orderDAO.update(order);
+		LOGGER.info("Order Updated");
+		return order;
 	}
 	
 	/**
@@ -99,6 +134,14 @@ public class OrderController implements CrudController<Order>{
 		LOGGER.info("Please enter the id of the order you would like to delete");
 		Long id = utils.getLong();
 		return orderDAO.delete(id);
+	}
+
+	@Override
+	public double cost() {
+		LOGGER.info("Please enter the id of the order you would like to know the price of");
+		Long id = utils.getLong();
+		LOGGER.info("£" + orderDAO.cost(id));
+		return orderDAO.cost(id);
 	}
 
 }

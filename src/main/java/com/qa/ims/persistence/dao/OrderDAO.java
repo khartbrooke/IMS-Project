@@ -50,7 +50,6 @@ public class OrderDAO implements Dao<Order> {
 				}
 			}
 		}
-
 		return new Order(id, cust, items);
 	}
 
@@ -178,17 +177,31 @@ public class OrderDAO implements Dao<Order> {
 	public Order update(Order order) {
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				PreparedStatement statement = connection
-						.prepareStatement("UPDATE items SET name = ?, price = ? WHERE id = ?");) {
-			statement.setString(1, item.getName());
-			statement.setDouble(2, item.getPrice());
-			statement.setLong(3, item.getId());
+						.prepareStatement("DELETE FROM order_contents WHERE fk_order_id = ?");) {
+			statement.setLong(1, order.getId());
 			statement.executeUpdate();
-			return read(item.getId());
 		} catch (Exception e) {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());
 		}
-		return order;
+		List<Item> items = order.getItems();
+		for (int i = 0; i < items.size(); i++) {			
+		    try (Connection connection = DBUtils.getInstance().getConnection();
+			    	PreparedStatement statement = connection
+						    .prepareStatement("INSERT INTO order_contents(fk_order_id, fk_item_id) VALUES (?, ?)");) {
+			    statement.setLong(1, order.getId());
+			    Item item = items.get(i);
+			    statement.setLong(2, item.getId());
+			    statement.executeUpdate();
+			    if (i+1 == items.size()) {
+			    	return read(order.getId());
+			    }			    
+		    } catch (Exception e) {
+			    LOGGER.debug(e);
+			    LOGGER.error(e.getMessage());
+		    }
+		}
+		return null;
 	}
 	
 	/**
@@ -210,6 +223,16 @@ public class OrderDAO implements Dao<Order> {
 			LOGGER.error(e.getMessage());
 		}
 		return 0;
+	}
+	
+	public double cost(long id) {
+		Order order = read(id);
+		List<Item> items = order.getItems();
+		double result = 0;
+		for (Item item : items) {
+			result = result + item.getPrice();
+		}
+		return result;
 	}
 
 }

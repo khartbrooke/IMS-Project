@@ -20,6 +20,11 @@ JOIN `customers` c ON c.`id` = o.`fk_cust_id`
 JOIN `order_contents` oc ON oc.`fk_order_id` = o.`id`
 JOIN `items` i ON i.`id` = oc.`fk_item_id`;
 
+SELECT o.id, o.fk_cust_id, c.first_name, c.surname, c.address, c.postcode, c.email 
+FROM orders o 
+JOIN customers c ON c.id = o.fk_cust_id
+WHERE o.id = 2;
+
 SELECT o.`id`, c.`first_name`, c.`surname`, GROUP_CONCAT(i.`name`) AS contents
 FROM `orders` o 
 JOIN `customers` c ON c.`id` = o.`fk_cust_id`
@@ -36,3 +41,4 @@ SELECT oc.fk_order_id, oc.fk_item_id, i.name, i.price
 FROM order_contents oc
 JOIN items i ON i.id = oc.fk_item_id
 ORDER BY oc.fk_order_id ASC; 
+

@@ -48,12 +48,12 @@ public class Order {
 		for (int i = 0; i < items.size(); i++) {
 			str = str + items.get(i).getName() + ", price:" + items.get(i).getPrice() + "\r\n";
 		}
-		return null;
+		return str;
 	}
 
 	@Override
 	public String toString() {
-		return "id:" + id + " name:" + cust.getFirstName() + " " + cust.getSurname() + "\r\n items:\r\n" + itemsToString(items);
+		return "id:" + id + " name:" + cust.getFirstName() + " " + cust.getSurname() + "\r\nitems:\r\n" + itemsToString(items);
 	}	
 	
 	@Override

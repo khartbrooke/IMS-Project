@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.qa.ims.controller.Action;
+import com.qa.ims.controller.CostController;
 import com.qa.ims.controller.CrudController;
 import com.qa.ims.controller.CustomerController;
 import com.qa.ims.controller.ItemController;
@@ -55,6 +56,7 @@ domainAction(domain);
 		do {
 
 			CrudController<?> active = null;
+			CostController other = null;
 			switch (domain) {
 			case CUSTOMER:
 				active = this.customers;
@@ -63,7 +65,7 @@ domainAction(domain);
 				active = this.items;
 				break;
 			case ORDER:
-				active = this.orders;
+				other = this.orders;
 				break;
 			case STOP:
 				return;
@@ -72,15 +74,27 @@ domainAction(domain);
 			}
 
 			LOGGER.info(() ->"What would you like to do with " + domain.name().toLowerCase() + ":");
+            
+			if (domain == Domain.ORDER) {
+				Action.printActions();
+				Action action = Action.getAction(utils);
 
-			Action.printActions();
-			Action action = Action.getAction(utils);
+				if (action == Action.RETURN) {
+				    changeDomain = true;
+				} else {
+				    doActionOrder(other, action);
+				}
+			} else {		
+			    Action.printActionsNoCost();
+			    Action action = Action.getAction(utils);
 
-			if (action == Action.RETURN) {
-				changeDomain = true;
-			} else {
-				doAction(active, action);
-			}
+			    if (action == Action.RETURN || action == Action.COST) {
+				    changeDomain = true;
+			    } else {
+				    doAction(active, action);
+			    }
+			}			
+			
 		} while (!changeDomain);
 	}
 
@@ -96,7 +110,31 @@ domainAction(domain);
 			crudController.update();
 			break;
 		case DELETE:
-			crudController.delete();
+			crudController.delete();			
+			break;
+		case RETURN:
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void doActionOrder(CostController costController, Action action) {
+		switch (action) {
+		case CREATE:
+			costController.create();
+			break;
+		case READ:
+			costController.readAll();
+			break;
+		case UPDATE:
+			costController.update();
+			break;
+		case DELETE:
+			costController.delete();			
+			break;
+		case COST:
+			costController.cost();			
 			break;
 		case RETURN:
 			break;

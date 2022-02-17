@@ -46,7 +46,7 @@ public class Order {
 	private String itemsToString(List<Item> items) {
 		String str = "";
 		for (int i = 0; i < items.size(); i++) {
-			str = str + items.get(i).getName() + ", price:" + items.get(i).getPrice() + "\r\n";
+			str = str + "id:" + items.get(i).getId() + ", name:" + items.get(i).getName() + ", price:" + items.get(i).getPrice() + "\r\n";
 		}
 		return str;
 	}

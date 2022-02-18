@@ -79,7 +79,7 @@ public class CustomerDAO implements Dao<Customer> {
 			statement.setString(3, customer.getAddress());
 			statement.setString(4, customer.getPostcode());
 			statement.setString(5, customer.getEmail());
-			statement.executeUpdate();
+			statement.executeUpdate();			
 			return readLatest();
 		} catch (Exception e) {
 			LOGGER.debug(e);
@@ -138,10 +138,31 @@ public class CustomerDAO implements Dao<Customer> {
 	 */
 	@Override
 	public int delete(long id) {
-		try (Connection connection = DBUtils.getInstance().getConnection();
-				PreparedStatement statement = connection.prepareStatement("DELETE FROM customers WHERE id = ?");) {
-			statement.setLong(1, id);
-			return statement.executeUpdate();
+		List<Long> orders = new ArrayList<>();
+		try (Connection connectionOne = DBUtils.getInstance().getConnection();
+				Statement statement = connectionOne.createStatement();
+				ResultSet resultSet = statement.executeQuery("SELECT * FROM orders");) {
+			while (resultSet.next()) {
+				if (resultSet.getLong("fk_cust_id") == id) {
+				    orders.add(resultSet.getLong("id"));
+				}
+			}
+		} catch (SQLException e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+		}
+		try (Connection connectionTwo = DBUtils.getInstance().getConnection();				
+				PreparedStatement statement1 = connectionTwo.prepareStatement("DELETE FROM order_contents WHERE fk_order_id = ?");
+				PreparedStatement statement2 = connectionTwo.prepareStatement("DELETE FROM orders WHERE fk_cust_id = ?");
+				PreparedStatement statement3 = connectionTwo.prepareStatement("DELETE FROM customers WHERE id = ?");) {
+			for (Long l : orders) {
+			    statement1.setLong(1, l);
+				statement1.executeUpdate();
+			}
+			statement2.setLong(1, id);
+			statement3.setLong(1, id);
+			statement2.executeUpdate();
+			return statement3.executeUpdate();
 		} catch (Exception e) {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());

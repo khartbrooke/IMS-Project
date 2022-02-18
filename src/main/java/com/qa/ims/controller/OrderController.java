@@ -14,7 +14,7 @@ import com.qa.ims.persistence.domain.Item;
 import com.qa.ims.persistence.domain.Order;
 import com.qa.ims.utils.Utils;
 
-public class OrderController implements CostController {
+public class OrderController implements CostController<Order> {
 	
 	public static final Logger LOGGER = LogManager.getLogger();
 	
@@ -26,7 +26,7 @@ public class OrderController implements CostController {
 	public OrderController(OrderDAO orderDAO, Utils utils) {
 		super();
 		this.orderDAO = orderDAO;
-		this.utils = utils;
+		this.utils = utils; 
 	}
 	
 	/**
@@ -90,7 +90,7 @@ public class OrderController implements CostController {
 		Item item;
 		Long itemId;
 		while (!response.equalsIgnoreCase("CANCEL") || !response.equalsIgnoreCase("NO")) {
-			if (response.equals("ADD")) {
+			if (response.equalsIgnoreCase("ADD")) {
 				LOGGER.info("Please enter the id of the item you would like to add");
 				itemId = utils.getLong();
 				item = itemDAO.read(itemId);

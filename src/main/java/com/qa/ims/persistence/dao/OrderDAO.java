@@ -32,7 +32,7 @@ public class OrderDAO implements Dao<Order> {
 		String email = resultSet.getString("email");
 		Customer cust = new Customer(custId, firstName, surname, address, postcode, email);
 
-		List<Item> items = new ArrayList<>();
+		List<Item> items = new ArrayList<>(); 
 
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				Statement statement = connection.createStatement();

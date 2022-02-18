@@ -1,8 +1,16 @@
 package com.qa.ims.controller;
 
-import com.qa.ims.persistence.domain.Order;
+import java.util.List;
 
-public interface CostController extends CrudController<Order>{
+public interface CostController<T> {
+	
+	List<T> readAll();
+
+	T create();
+
+	T update();
+
+	int delete();
 	
     double cost();
 	

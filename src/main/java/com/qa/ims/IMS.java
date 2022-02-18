@@ -56,7 +56,7 @@ domainAction(domain);
 		do {
 
 			CrudController<?> active = null;
-			CostController other = null;
+			CostController<?> other = null;
 			switch (domain) {
 			case CUSTOMER:
 				active = this.customers;
@@ -119,7 +119,7 @@ domainAction(domain);
 		}
 	}
 	
-	public void doActionOrder(CostController costController, Action action) {
+	public void doActionOrder(CostController<?> costController, Action action) {
 		switch (action) {
 		case CREATE:
 			costController.create();

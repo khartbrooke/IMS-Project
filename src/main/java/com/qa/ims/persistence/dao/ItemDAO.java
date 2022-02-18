@@ -130,9 +130,12 @@ public class ItemDAO implements Dao<Item>{
 	@Override
 	public int delete(long id) {
 		try (Connection connection = DBUtils.getInstance().getConnection();
-				PreparedStatement statement = connection.prepareStatement("DELETE FROM items WHERE id = ?");) {
-			statement.setLong(1, id);
-			return statement.executeUpdate();
+				PreparedStatement statement1 = connection.prepareStatement("DELETE FROM order_contents WHERE fk_item_id = ?");
+				PreparedStatement statement2 = connection.prepareStatement("DELETE FROM items WHERE id = ?");) {
+			statement1.setLong(1, id);
+			statement2.setLong(1, id);
+			statement1.executeUpdate();
+			return statement2.executeUpdate();
 		} catch (Exception e) {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());

@@ -79,7 +79,7 @@ public class CustomerDAO implements Dao<Customer> {
 			statement.setString(3, customer.getAddress());
 			statement.setString(4, customer.getPostcode());
 			statement.setString(5, customer.getEmail());
-			statement.executeUpdate();
+			statement.executeUpdate();			
 			return readLatest();
 		} catch (Exception e) {
 			LOGGER.debug(e);

@@ -39,7 +39,7 @@ public class CustomerControllerTest {
 
 		assertEquals(created, controller.create());
 
-		Mockito.verify(utils, Mockito.times(2)).getString();
+		Mockito.verify(utils, Mockito.times(5)).getString();
 		Mockito.verify(dao, Mockito.times(1)).create(created);
 	}
 
@@ -66,7 +66,7 @@ public class CustomerControllerTest {
 		assertEquals(updated, this.controller.update());
 
 		Mockito.verify(this.utils, Mockito.times(1)).getLong();
-		Mockito.verify(this.utils, Mockito.times(2)).getString();
+		Mockito.verify(this.utils, Mockito.times(5)).getString();
 		Mockito.verify(this.dao, Mockito.times(1)).update(updated);
 	}
 

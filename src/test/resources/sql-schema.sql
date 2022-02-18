@@ -1,4 +1,7 @@
+DROP TABLE IF EXISTS `order_contents`;
+DROP TABLE IF EXISTS `orders`;
 DROP TABLE IF EXISTS `customers`;
+DROP TABLE IF EXISTS `items`;
 
 CREATE TABLE IF NOT EXISTS `customers` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,

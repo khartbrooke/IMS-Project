@@ -26,7 +26,7 @@ public class OrderController implements CostController<Order> {
 	public OrderController(OrderDAO orderDAO, Utils utils) {
 		super();
 		this.orderDAO = orderDAO;
-		this.utils = utils;
+		this.utils = utils; 
 	}
 	
 	/**

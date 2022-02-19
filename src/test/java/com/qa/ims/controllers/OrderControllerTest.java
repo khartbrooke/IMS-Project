@@ -26,11 +26,11 @@ import com.qa.ims.utils.Utils;
 @RunWith(MockitoJUnitRunner.class)
 public class OrderControllerTest {
 	
-	/*@Before
+	@Before
 	public void setup() {
 		DBUtils.connect();
 		DBUtils.getInstance().init("src/test/resources/sql-schema.sql", "src/test/resources/sql-data.sql");
-	}*/
+	}
 	
 	@Mock
 	private Utils utils;
@@ -58,9 +58,9 @@ public class OrderControllerTest {
 		final Order created = new Order(CUST, ITEMS);
 
 		Mockito.when(utils.getLong()).thenReturn(CUST.getId(), item1.getId(), item2.getId());
-		Mockito.when(customerDAO.read(CUST.getId())).thenReturn(CUST);
-		Mockito.when(itemDAO.read(item1.getId())).thenReturn(item1);
-		Mockito.when(itemDAO.read(item2.getId())).thenReturn(item2);
+		//Mockito.when(customerDAO.read(CUST.getId())).thenReturn(CUST);
+		//Mockito.when(itemDAO.read(item1.getId())).thenReturn(item1);
+		//Mockito.when(itemDAO.read(item2.getId())).thenReturn(item2);
 		Mockito.when(utils.getString()).thenReturn("y", "invalid", "n");
 		Mockito.when(dao.create(created)).thenReturn(created);
 
@@ -68,9 +68,9 @@ public class OrderControllerTest {
  
 
 		Mockito.verify(utils, Mockito.times(3)).getLong();
-		Mockito.verify(customerDAO, Mockito.times(1)).read(CUST.getId());
-		Mockito.verify(itemDAO, Mockito.times(1)).read(item1.getId());
-		Mockito.verify(itemDAO, Mockito.times(1)).read(item2.getId());
+		//Mockito.verify(customerDAO, Mockito.times(1)).read(CUST.getId());
+		//Mockito.verify(itemDAO, Mockito.times(1)).read(item1.getId());
+		//Mockito.verify(itemDAO, Mockito.times(1)).read(item2.getId());
 		Mockito.verify(utils, Mockito.times(3)).getString();
 		Mockito.verify(dao, Mockito.times(1)).create(created);
 	}
@@ -99,26 +99,28 @@ public class OrderControllerTest {
 		Item warhammer = new Item(1L, "Total War: Warhammer 3", 49.99);
 		Item pathfinder = new Item(2L, "Pathfinder: Wrath of the Righteous", 49.99);
 		itemsOld.add(warhammer);
+		itemsNew = itemsOld;
 		itemsNew.add(pathfinder);
+		itemsNew.remove(warhammer);
 		
 		Order old = new Order(1L, jordan, itemsOld);
 		Order updated = new Order(1L, jordan, itemsNew);
 
-		Mockito.when(this.utils.getLong()).thenReturn(1L, 2L, 1L);
-		Mockito.when(this.dao.read(updated.getId())).thenReturn(old);		
-		Mockito.when(this.utils.getString()).thenReturn("add", "remove", "no");
-		Mockito.when(this.itemDAO.read(2L)).thenReturn(pathfinder);
-		Mockito.when(this.itemDAO.read(1L)).thenReturn(warhammer);
-		Mockito.when(this.dao.update(updated)).thenReturn(updated);
+		Mockito.when(utils.getLong()).thenReturn(old.getId(), pathfinder.getId(), warhammer.getId());
+		Mockito.when(dao.read(old.getId())).thenReturn(old);		
+		Mockito.when(utils.getString()).thenReturn("ADD", "REMOVE", "NO");
+		//Mockito.when(this.itemDAO.read(2L)).thenReturn(pathfinder);
+		//Mockito.when(this.itemDAO.read(1L)).thenReturn(warhammer);
+		Mockito.when(dao.update(updated)).thenReturn(updated);
 
-		assertEquals(updated, this.controller.update());
+		assertEquals(updated, controller.update());
 
-		Mockito.verify(this.utils, Mockito.times(3)).getLong();
-		Mockito.verify(this.dao, Mockito.times(1)).read(updated.getId());
-		Mockito.verify(this.utils, Mockito.times(3)).getString();
-		Mockito.verify(this.itemDAO, Mockito.times(1)).read(2L);
-        Mockito.verify(this.itemDAO, Mockito.times(1)).read(1L);
-		Mockito.verify(this.dao, Mockito.times(1)).update(updated);
+		Mockito.verify(utils, Mockito.times(3)).getLong();
+		Mockito.verify(dao, Mockito.times(1)).read(old.getId());
+		Mockito.verify(utils, Mockito.times(3)).getString();
+		//Mockito.verify(this.itemDAO, Mockito.times(1)).read(2L);
+        //Mockito.verify(this.itemDAO, Mockito.times(1)).read(1L);
+		Mockito.verify(dao, Mockito.times(1)).update(updated);
 	}
 
 	@Test
@@ -132,6 +134,19 @@ public class OrderControllerTest {
 
 		Mockito.verify(utils, Mockito.times(1)).getLong();
 		Mockito.verify(dao, Mockito.times(1)).delete(ID);
+	}
+	
+	@Test
+	public void testCost() {
+		final long ID = 1L;
+		
+		//Mockito.when(utils.getLong()).thenReturn(ID);
+		Mockito.when(dao.cost(ID)).thenReturn(49.99);
+		
+		assertEquals(49.99, dao.cost(ID), 0.001);
+		
+		//Mockito.verify(utils, Mockito.times(1)).getLong();
+		Mockito.verify(dao, Mockito.times(1)).cost(ID);
 	}
 
 }
